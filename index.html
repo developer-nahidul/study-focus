@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7161e8" />
+  <title>Deep Focus — Focus Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Deep Focus home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>deep<span class="brand-light">focus</span></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">◫</span> Overview</button>
+        <button class="nav-item" data-view="tasks"><span class="nav-icon">☷</span> My tasks <span class="nav-count"
+            id="navTaskCount">0</span></button>
+        <button class="nav-item" data-view="analytics"><span class="nav-icon">▥</span> Analytics</button>
+        <button class="nav-item" data-view="progress"><span class="nav-icon">◇</span> Progress card</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <div class="tip-icon">✦</div>
+          <strong>Small steps, big focus.</strong>
+          <p>One focused session at a time. You’ve got this.</p>
+        </div>
+        <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span> Settings</button>
+        <div class="profile">
+          <div class="avatar">M</div>
+          <div class="profile-copy"><strong>My workspace</strong><span>Personal plan</span></div>
+          <span class="profile-more">···</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumbCurrent">Overview</strong></div>
+        <div class="topbar-right">
+          <span class="today-label" id="todayLabel"></span>
+          <button class="icon-button" id="soundToggle" aria-label="Toggle sound" title="Toggle sound">♫</button>
+          <div class="top-avatar">M</div>
+        </div>
+      </header>
+
+      <section class="view active-view" id="dashboardView">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">YOUR PERSONAL FOCUS SPACE</p>
+            <h1>Make room for <span>deep work.</span></h1>
+            <p class="muted welcome-subtitle">A little progress every day adds up to remarkable things.</p>
+          </div>
+          <div class="date-chip"><span class="date-dot"></span><span id="longDate"></span></div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon purple">◷</span><span class="stat-caption">TODAY</span></div>
+            <div class="stat-value"><span id="todayMinutes">0</span><small>min</small></div>
+            <div class="stat-footer"><span class="tiny-dot purple-dot"></span> Focus time</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon orange">✦</span><span class="stat-caption">SESSIONS</span>
+            </div>
+            <div class="stat-value"><span id="todaySessions">0</span><small>completed</small></div>
+            <div class="stat-footer"><span class="tiny-dot orange-dot"></span> Keep the momentum</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon green">✓</span><span class="stat-caption">TASKS</span></div>
+            <div class="stat-value"><span id="completedTasks">0</span><small>of <span id="totalTasks">0</span></small>
+            </div>
+            <div class="stat-footer"><span class="tiny-dot green-dot"></span> Tasks completed</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon blue">♨</span><span class="stat-caption">STREAK</span></div>
+            <div class="stat-value"><span id="streakDays">0</span><small>days</small></div>
+            <div class="stat-footer"><span class="tiny-dot blue-dot"></span> Build your habit</div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel focus-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">STAY IN THE ZONE</p>
+                <h2>Focus timer</h2>
+              </div>
+              <span class="mode-pill" id="modePill">POMODORO</span>
+            </div>
+            <p class="panel-description">Choose a task, set your intention, and give it your full attention.</p>
+            <div class="timer-tabs" role="group" aria-label="Timer mode">
+              <button class="timer-tab active" data-mode="focus">Focus</button>
+              <button class="timer-tab" data-mode="short">Short break</button>
+              <button class="timer-tab" data-mode="long">Long break</button>
+            </div>
+            <div class="timer-wrap">
+              <div class="timer-ring" id="timerRing">
+                <div class="timer-inner">
+                  <span class="timer-status" id="timerStatus">READY TO FOCUS</span>
+                  <strong id="timerDisplay">25:00</strong>
+                  <span class="timer-unit" id="timerUnit">minutes</span>
+                </div>
+              </div>
+            </div>
+            <div class="timer-progress-label"><span class="progress-dot"></span><span id="sessionLabel">Session 1 of
+                4</span><span class="progress-separator">·</span><span id="sessionCount">0 completed</span></div>
+            <div class="timer-task-select">
+              <label for="focusTask">FOCUSING ON</label>
+              <select id="focusTask">
+                <option value="">Choose a task (optional)</option>
+              </select>
+            </div>
+            <div class="timer-controls">
+              <button class="button button-primary" id="startPauseBtn"><span id="startPauseIcon">▶</span><span
+                  id="startPauseText">Start focus</span></button>
+              <button class="button button-secondary" id="resetBtn" aria-label="Reset timer"
+                title="Reset timer">↻</button>
+              <button class="button button-secondary skip-button" id="skipBtn" title="Skip this session">↠</button>
+            </div>
+            <p class="timer-note">Tip: silence notifications and focus on one thing at a time.</p>
+          </section>
+
+          <div class="right-column">
+            <section class="panel tasks-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">MAKE IT COUNT</p>
+                  <h2>Today’s priorities</h2>
+                </div>
+                <button class="text-button" data-go="tasks">View all <span>↗</span></button>
+              </div>
+              <form class="quick-add" id="quickAddForm">
+                <input id="quickTaskInput" type="text" maxlength="120" placeholder="Add a task for today..."
+                  aria-label="New task" required />
+                <button type="submit" aria-label="Add task">+</button>
+              </form>
+              <div class="task-list" id="dashboardTaskList"></div>
+              <div class="task-list-empty hidden" id="dashboardEmpty"><span>✦</span><strong>A clear mind starts
+                  here.</strong>
+                <p>Add one small priority to get started.</p>
+              </div>
+              <div class="tasks-footer"><span id="taskProgressText">0 of 0 completed</span>
+                <div class="mini-progress"><span id="taskProgressBar"></span></div>
+              </div>
+            </section>
+            <section class="panel weekly-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">CONSISTENCY OVER INTENSITY</p>
+                  <h2>This week</h2>
+                </div>
+                <span class="week-total" id="weekTotal">0 min</span>
+              </div>
+              <div class="weekly-chart" id="weeklyChart" aria-label="Focus minutes for the last seven days"></div>
+              <div class="chart-legend"><span><i></i> Focus minutes</span><span id="weekAverage">Daily average: 0
+                  min</span></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="tasksView">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">YOUR WORK, ORGANIZED</p>
+            <h1>My tasks</h1>
+            <p class="muted">Turn your intentions into small, finishable steps.</p>
+          </div>
+        </div>
+        <section class="panel full-panel">
+          <form class="task-create-form" id="taskCreateForm">
+            <input id="newTaskInput" type="text" maxlength="120" placeholder="What do you want to focus on?"
+              aria-label="Task title" required />
+            <select id="newTaskPriority" aria-label="Task priority">
+              <option value="medium">Medium priority</option>
+              <option value="high">High priority</option>
+              <option value="low">Low priority</option>
+            </select>
+            <button class="button button-primary" type="submit">+ Add task</button>
+          </form>
+          <div class="task-toolbar">
+            <div class="filter-tabs"><button class="filter-tab active" data-filter="all">All tasks</button><button
+                class="filter-tab" data-filter="active">To do</button><button class="filter-tab"
+                data-filter="completed">Completed</button></div><span id="allTaskCount" class="muted small-text">0
+              tasks</span>
+          </div>
+          <div id="allTasksList" class="all-tasks-list"></div>
+          <div id="allTasksEmpty" class="empty-state hidden"><span>☷</span>
+            <h3>No tasks here yet</h3>
+            <p>Add a task above to give your next focus session a purpose.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="analyticsView">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">NOTICE YOUR PROGRESS</p>
+            <h1>Your focus, over time.</h1>
+            <p class="muted">Every session is proof that you showed up.</p>
+          </div>
+        </div>
+        <div class="stats-grid analytics-stats">
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon purple">◷</span><span class="stat-caption">ALL TIME</span>
+            </div>
+            <div class="stat-value"><span id="allTimeMinutes">0</span><small>min focused</small></div>
+            <div class="stat-footer">Total recorded focus time</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon orange">✦</span><span class="stat-caption">SESSIONS</span>
+            </div>
+            <div class="stat-value"><span id="allTimeSessions">0</span><small>completed</small></div>
+            <div class="stat-footer">All completed focus sessions</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-icon green">✓</span><span class="stat-caption">TASKS</span></div>
+            <div class="stat-value"><span id="allTimeTasks">0</span><small>completed</small></div>
+            <div class="stat-footer">Small wins add up</div>
+          </article>
+        </div>
+        <section class="panel analytics-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LAST 7 DAYS</p>
+              <h2>Focus activity</h2>
+            </div><span class="week-total" id="analyticsWeekTotal">0 min</span>
+          </div>
+          <div class="large-chart" id="analyticsChart"></div>
+        </section>
+        <section class="panel history-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">YOUR RECENT WORK</p>
+              <h2>Recent focus sessions</h2>
+            </div>
+          </div>
+          <div id="sessionHistory" class="session-history"></div>
+          <div id="historyEmpty" class="empty-inline">Your completed focus sessions will show up here.</div>
+        </section>
+      </section>
+
+
+      <section class="view" id="progressView">
+        <div class="page-heading progress-page-heading">
+          <div>
+            <p class="eyebrow">YOUR JOURNEY, MADE VISIBLE</p>
+            <h1>Progress card</h1>
+            <p class="muted">Track each step, level up through consistent focus, and print a clean A4 report.</p>
+          </div>
+          <button class="button button-primary print-report-button" id="printProgressBtn"><span>▣</span> Print A4
+            report</button>
+        </div>
+
+        <section class="progress-hero panel">
+          <div class="progress-hero-copy">
+            <span class="progress-kicker">YOUR CURRENT LEVEL</span>
+            <div class="level-line"><span class="level-badge" id="levelBadge">01</span>
+              <div>
+                <h2 id="levelTitle">Focus Beginner</h2>
+                <p id="levelSubtitle">Every expert starts with one focused minute.</p>
+              </div>
+            </div>
+            <div class="level-progress-heading"><span id="levelProgressLabel">0 / 60 XP to next level</span><strong
+                id="levelProgressPercent">0%</strong></div>
+            <div class="level-progress-track"><span id="levelProgressFill"></span></div>
+            <p class="next-level-hint" id="nextLevelHint">Complete focus sessions and tasks to earn XP.</p>
+          </div>
+          <div class="progress-hero-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="trophy">✦</div><span class="spark spark-one">✧</span><span class="spark spark-two">✦</span>
+          </div>
+        </section>
+
+        <div class="progress-metrics">
+          <article class="progress-metric panel"><span class="metric-symbol purple">◷</span><span
+              class="metric-label">FOCUS MINUTES</span><strong id="progressTotalMinutes">0</strong><small>All-time
+              focused work</small></article>
+          <article class="progress-metric panel"><span class="metric-symbol orange">✦</span><span
+              class="metric-label">SESSIONS</span><strong id="progressTotalSessions">0</strong><small>Completed focus
+              sessions</small></article>
+          <article class="progress-metric panel"><span class="metric-symbol green">✓</span><span
+              class="metric-label">TASKS FINISHED</span><strong id="progressTotalTasks">0</strong><small>Completed
+              tasks</small></article>
+          <article class="progress-metric panel"><span class="metric-symbol blue">♨</span><span
+              class="metric-label">CURRENT STREAK</span><strong id="progressStreak">0</strong><small>Consecutive focus
+              days</small></article>
+        </div>
+
+        <div class="progress-detail-grid">
+          <section class="panel milestone-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">ONE STEP AT A TIME</p>
+                <h2>Your level roadmap</h2>
+              </div><span class="roadmap-count" id="roadmapCount">0 / 5 levels</span>
+            </div>
+            <p class="muted roadmap-description">Each milestone unlocks through recorded focus minutes, completed
+              sessions, and finished tasks.</p>
+            <div class="roadmap" id="levelRoadmap"></div>
+          </section>
+          <section class="panel achievement-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">MILESTONES YOU'VE EARNED</p>
+                <h2>Achievements</h2>
+              </div>
+            </div>
+            <div id="achievementList" class="achievement-list"></div>
+          </section>
+        </div>
+
+        <section class="panel report-preview-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">READY TO SHARE OR KEEP</p>
+              <h2>A4 progress report preview</h2>
+            </div><span class="report-format">A4 · PORTRAIT</span>
+          </div>
+          <p class="muted">Your printable report includes your level, focus statistics, roadmap, achievements, and a
+            personal progress summary. Use your browser's print dialog to save as PDF or print on paper.</p>
+          <div class="report-preview">
+            <div class="report-preview-brand"><span class="report-mini-mark">✦</span><span>DEEP FOCUS <small>PERSONAL
+                  PROGRESS REPORT</small></span><span class="report-preview-date" id="reportPreviewDate"></span></div>
+            <div class="report-preview-body">
+              <div><span class="preview-label">CURRENT LEVEL</span>
+                <h3 id="previewLevelTitle">Focus Beginner</h3>
+                <p id="previewLevelSub">Your focus journey is underway.</p>
+              </div>
+              <div class="preview-level" id="previewLevelNumber">LEVEL 01</div>
+            </div>
+            <div class="preview-stat-row">
+              <div><small>FOCUS MINUTES</small><strong id="previewMinutes">0</strong></div>
+              <div><small>SESSIONS</small><strong id="previewSessions">0</strong></div>
+              <div><small>TASKS DONE</small><strong id="previewTasks">0</strong></div>
+              <div><small>STREAK</small><strong id="previewStreak">0 days</strong></div>
+            </div>
+            <div class="preview-progress"><span>Progress to next level</span><strong id="previewPercent">0%</strong>
+              <div class="level-progress-track"><span id="previewProgressFill"></span></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="settingsView">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">MAKE IT YOURS</p>
+            <h1>Settings</h1>
+            <p class="muted">Tune your focus rhythm to fit the way you work.</p>
+          </div>
+        </div>
+        <section class="panel settings-panel">
+          <div class="settings-section">
+            <div>
+              <h2>Timer durations</h2>
+              <p class="muted">Choose the length of each session.</p>
+            </div>
+            <div class="duration-grid">
+              <label>Focus session <span><input type="number" id="focusDuration" min="1" max="180" value="25" />
+                  min</span></label>
+              <label>Short break <span><input type="number" id="shortDuration" min="1" max="60" value="5" />
+                  min</span></label>
+              <label>Long break <span><input type="number" id="longDuration" min="1" max="90" value="15" />
+                  min</span></label>
+              <label>Sessions per cycle <span><input type="number" id="sessionsPerCycle" min="2" max="8"
+                    value="4" /></span></label>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div>
+              <h2>Focus experience</h2>
+              <p class="muted">A few small preferences.</p>
+            </div>
+            <div class="setting-row">
+              <div><strong>Auto-start breaks</strong>
+                <p class="muted">Start a break automatically when focus ends.</p>
+              </div><label class="switch"><input id="autoBreaks" type="checkbox"><span></span></label>
+            </div>
+            <div class="setting-row">
+              <div><strong>Sound alerts</strong>
+                <p class="muted">Play a gentle alert when a session finishes.</p>
+              </div><label class="switch"><input id="soundAlerts" type="checkbox" checked><span></span></label>
+            </div>
+          </div>
+          <div class="settings-actions"><button class="button button-primary" id="saveSettingsBtn">Save
+              settings</button><button class="button button-secondary" id="resetDataBtn">Reset all data</button></div>
+          <p class="settings-message" id="settingsMessage" role="status"></p>
+        </section>
+      </section>
+      <footer class="app-footer">Made for meaningful work <span>✦</span> Your progress stays on this device.</footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+  <footer>
+    <p>We are contributing team x@ </p>
+  </footer>
+</body>
+
+</html>
